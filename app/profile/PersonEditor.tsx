@@ -114,32 +114,34 @@ export function PersonEditor({ person }: { person: Person & { id: string } }) {
   }
 
   return (
-    <div className="rounded-xl border border-neutral-200 p-4">
+    <div className="rounded-xl border border-plum/10 bg-white p-4">
       <div className="flex items-center justify-between">
-        <h3 className="font-medium">
+        <h3 className="font-medium text-plum">
           {name || "Unnamed"}
           {person.isPrimary && (
-            <span className="ml-2 text-xs font-normal text-neutral-500">meal planner</span>
+            <span className="ml-2 text-[10px] font-medium uppercase tracking-wider text-claret">
+              meal planner
+            </span>
           )}
         </h3>
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-3">
-        <label className="col-span-2 flex flex-col gap-1 text-sm">
+        <label className="col-span-2 flex flex-col gap-1 text-sm text-plum">
           Name
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 focus:outline-none focus:border-claret"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Age band
           <select
             value={ageBand}
             onChange={(e) => setAgeBand(e.target.value as AgeBand)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 focus:outline-none focus:border-claret"
           >
             {AGE_BAND_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
@@ -149,32 +151,32 @@ export function PersonEditor({ person }: { person: Person & { id: string } }) {
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Weight (lb)
           <input
             type="number"
             value={weightLbs}
             onChange={(e) => setWeightLbs(e.target.value)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 focus:outline-none focus:border-claret"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Body fat % (optional)
           <input
             type="number"
             value={bodyFatPct}
             onChange={(e) => setBodyFatPct(e.target.value)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 focus:outline-none focus:border-claret"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Goal
           <select
             value={goal}
             onChange={(e) => setGoal(e.target.value as Goal)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 focus:outline-none focus:border-claret"
           >
             {GOAL_OPTIONS.map((o) => (
               <option key={o.value} value={o.value} disabled={o.value === "leaner" && ageBand !== "18_plus"}>
@@ -184,7 +186,7 @@ export function PersonEditor({ person }: { person: Person & { id: string } }) {
           </select>
         </label>
 
-        <label className="col-span-2 flex flex-col gap-1 text-sm">
+        <label className="col-span-2 flex flex-col gap-1 text-sm text-plum">
           Meals per day
           <div className="flex gap-2">
             {[2, 3, 4, 5].map((n) => (
@@ -193,7 +195,7 @@ export function PersonEditor({ person }: { person: Person & { id: string } }) {
                 key={n}
                 onClick={() => setMealsPerDay(n)}
                 className={`rounded-full border px-3 py-1 text-sm ${
-                  mealsPerDay === n ? "border-bubbleUser bg-bubbleUser text-white" : "border-neutral-300"
+                  mealsPerDay === n ? "border-claret bg-claret text-bone" : "border-plum/15 text-plum"
                 }`}
               >
                 {n}
@@ -202,32 +204,32 @@ export function PersonEditor({ person }: { person: Person & { id: string } }) {
           </div>
         </label>
 
-        <label className="col-span-2 flex flex-col gap-1 text-sm">
+        <label className="col-span-2 flex flex-col gap-1 text-sm text-plum">
           Avoid
           <textarea
             value={avoidNotes}
             onChange={(e) => setAvoidNotes(e.target.value)}
             rows={2}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 focus:outline-none focus:border-claret"
           />
         </label>
 
-        <label className="col-span-2 flex flex-col gap-1 text-sm">
+        <label className="col-span-2 flex flex-col gap-1 text-sm text-plum">
           Cultural foods to build around
           <textarea
             value={culturalFoods}
             onChange={(e) => setCulturalFoods(e.target.value)}
             rows={2}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 focus:outline-none focus:border-claret"
           />
         </label>
 
-        <label className="col-span-2 flex flex-col gap-1 text-sm">
+        <label className="col-span-2 flex flex-col gap-1 text-sm text-plum">
           Stated priority (e.g. plant-based)
           <input
             value={dietPriority}
             onChange={(e) => setDietPriority(e.target.value)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 focus:outline-none focus:border-claret"
           />
         </label>
       </div>
@@ -235,7 +237,7 @@ export function PersonEditor({ person }: { person: Person & { id: string } }) {
       {warning && <p className="mt-2 text-xs text-amber-700">{warning}</p>}
 
       {preview && (
-        <p className="mt-2 text-xs text-neutral-600">
+        <p className="mt-2 text-xs text-plum/60">
           Protein target: {preview.proteinGDay}g/day, {preview.proteinGPerMeal}g/meal
           {preview.usedFallback ? " (estimated without body fat)" : ""}
         </p>
@@ -246,7 +248,7 @@ export function PersonEditor({ person }: { person: Person & { id: string } }) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="mt-3 rounded-full bg-bubbleUser px-4 py-1.5 text-sm font-medium text-white disabled:opacity-40"
+        className="mt-3 rounded-full bg-spark px-4 py-1.5 text-sm font-medium text-white disabled:opacity-40"
       >
         {saving ? "Saving..." : savedAt ? "Saved" : "Save"}
       </button>

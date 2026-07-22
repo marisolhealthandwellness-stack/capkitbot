@@ -34,8 +34,8 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-full max-w-sm flex-col justify-center px-6 py-12">
-      <h1 className="text-xl font-semibold">Log in</h1>
+    <main className="mx-auto flex min-h-full max-w-sm flex-col justify-center bg-bone px-6 py-12 text-plum">
+      <h1 className="font-display text-3xl italic text-plum">Welcome back.</h1>
 
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
         <label className="flex flex-col gap-1 text-sm">
@@ -45,7 +45,7 @@ export default function LoginPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 bg-white px-3 py-2 text-plum focus:outline-none focus:border-claret"
           />
         </label>
 
@@ -56,7 +56,7 @@ export default function LoginPage() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 bg-white px-3 py-2 text-plum focus:outline-none focus:border-claret"
           />
         </label>
 
@@ -65,15 +65,15 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 rounded-full bg-bubbleUser px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
+          className="mt-2 rounded-full bg-spark px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
         >
           {submitting ? "Logging in..." : "Log in"}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-neutral-600">
+      <p className="mt-6 text-center text-sm text-plum/60">
         New here?{" "}
-        <Link href="/signup" className="text-bubbleUser underline">
+        <Link href="/signup" className="text-claret underline">
           Set up your household
         </Link>
       </p>

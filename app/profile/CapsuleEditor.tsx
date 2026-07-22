@@ -78,90 +78,90 @@ export function CapsuleEditor({
   }
 
   return (
-    <div className="rounded-xl border border-neutral-200 p-4">
-      <h3 className="font-medium">Capsule</h3>
-      <p className="mt-1 text-xs text-neutral-500">Separate items with commas.</p>
+    <div className="rounded-xl border border-plum/10 bg-white p-4">
+      <h3 className="font-medium text-plum">Capsule</h3>
+      <p className="mt-1 text-xs text-plum/50">Separate items with commas.</p>
 
       <div className="mt-3 flex flex-col gap-3">
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Proteins
           <textarea
             value={proteins}
             onChange={(e) => setProteins(e.target.value)}
             rows={2}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 text-plum focus:outline-none focus:border-claret"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Carbs and bases
           <textarea
             value={carbs}
             onChange={(e) => setCarbs(e.target.value)}
             rows={2}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 text-plum focus:outline-none focus:border-claret"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Produce
           <textarea
             value={produce}
             onChange={(e) => setProduce(e.target.value)}
             rows={2}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 text-plum focus:outline-none focus:border-claret"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Spices and sauces
           <textarea
             value={spicesSauces}
             onChange={(e) => setSpicesSauces(e.target.value)}
             rows={2}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 text-plum focus:outline-none focus:border-claret"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Fats
           <textarea
             value={fats}
             onChange={(e) => setFats(e.target.value)}
             rows={2}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 text-plum focus:outline-none focus:border-claret"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Cuisines (optional soft steer)
           <input
             value={cuisines}
             onChange={(e) => setCuisines(e.target.value)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 text-plum focus:outline-none focus:border-claret"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Pasted recipes (optional)
           <textarea
             value={recipes}
             onChange={(e) => setRecipes(e.target.value)}
             rows={3}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 text-plum focus:outline-none focus:border-claret"
           />
         </label>
       </div>
 
-      <h3 className="mt-5 font-medium">Kitchen context</h3>
+      <h3 className="mt-5 font-medium text-plum">Kitchen context</h3>
 
       <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Cooking skill
           <select
             value={cookSkill}
             onChange={(e) => setCookSkill(e.target.value as CookSkill)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 text-plum focus:outline-none focus:border-claret"
           >
             <option value="no_cook">No cook</option>
             <option value="newbie">Newbie</option>
@@ -170,12 +170,12 @@ export function CapsuleEditor({
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Prepared food reliance
           <select
             value={preparedFoodLevel}
             onChange={(e) => setPreparedFoodLevel(e.target.value as PreparedFoodLevel)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 text-plum focus:outline-none focus:border-claret"
           >
             <option value="from_scratch">From scratch</option>
             <option value="batch_staples">Batch staples</option>
@@ -183,12 +183,12 @@ export function CapsuleEditor({
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="flex flex-col gap-1 text-sm text-plum">
           Grocery access
           <select
             value={storeTier}
             onChange={(e) => setStoreTier(e.target.value as StoreTier)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 px-3 py-2 text-plum focus:outline-none focus:border-claret"
           >
             <option value="budget">Budget</option>
             <option value="grocery">Grocery</option>
@@ -202,7 +202,7 @@ export function CapsuleEditor({
       <button
         onClick={handleSave}
         disabled={saving}
-        className="mt-4 rounded-full bg-bubbleUser px-4 py-1.5 text-sm font-medium text-white disabled:opacity-40"
+        className="mt-4 rounded-full bg-spark px-4 py-1.5 text-sm font-medium text-white disabled:opacity-40"
       >
         {saving ? "Saving..." : savedAt ? "Saved" : "Save"}
       </button>

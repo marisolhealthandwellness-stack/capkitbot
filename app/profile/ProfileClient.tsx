@@ -50,10 +50,10 @@ export function ProfileClient({
   }
 
   return (
-    <main className="mx-auto flex min-h-full max-w-xl flex-col px-4 py-6">
+    <main className="mx-auto flex min-h-full max-w-xl flex-col bg-bone px-4 py-6 text-plum">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Household profile</h1>
-        <Link href="/chat" className="text-sm text-bubbleUser underline">
+        <h1 className="font-display text-2xl italic text-plum">Household profile</h1>
+        <Link href="/chat" className="text-sm text-claret underline">
           Back to chat
         </Link>
       </div>
@@ -67,7 +67,7 @@ export function ProfileClient({
       <button
         onClick={handleAddPerson}
         disabled={adding}
-        className="mt-4 self-start rounded-full border border-bubbleUser px-4 py-1.5 text-sm text-bubbleUser disabled:opacity-40"
+        className="mt-4 self-start rounded-full border border-claret px-4 py-1.5 text-sm text-claret disabled:opacity-40"
       >
         {adding ? "Adding..." : "+ Add person"}
       </button>

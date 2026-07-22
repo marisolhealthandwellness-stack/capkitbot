@@ -11,7 +11,7 @@ export function ChoiceChips({
         <button
           key={option}
           onClick={() => onSelect(option)}
-          className="rounded-full border border-bubbleUser px-3 py-1.5 text-sm text-bubbleUser active:bg-bubbleUser active:text-white"
+          className="rounded-full border border-claret px-3 py-1.5 text-sm font-medium text-claret transition-colors active:bg-claret active:text-bone"
         >
           {option}
         </button>

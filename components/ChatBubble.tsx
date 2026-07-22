@@ -10,8 +10,10 @@ export function ChatBubble({
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={`max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-[15px] leading-snug ${
-          isUser ? "bg-bubbleUser text-white" : "bg-bubbleBot text-black"
+        className={`max-w-[80%] whitespace-pre-wrap px-4 py-2 text-[15px] leading-snug ${
+          isUser
+            ? "rounded-tl-2xl rounded-tr-md rounded-bl-2xl rounded-br-2xl bg-mint text-plum"
+            : "rounded-tl-md rounded-tr-2xl rounded-bl-2xl rounded-br-2xl bg-claret text-bone"
         }`}
       >
         {content}

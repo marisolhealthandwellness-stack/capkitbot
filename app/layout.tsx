@@ -1,5 +1,19 @@
 import type { Metadata, Viewport } from "next";
+import { Montserrat, Poppins } from "next/font/google";
 import "./globals.css";
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-montserrat",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300"],
+  style: ["italic"],
+  variable: "--font-poppins",
+});
 
 export const metadata: Metadata = {
   title: "CapKitBOT",
@@ -23,7 +37,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#0b84fe",
+  themeColor: "#8B2942",
 };
 
 export default function RootLayout({
@@ -32,8 +46,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="h-full">{children}</body>
+    <html lang="en" className={`${montserrat.variable} ${poppins.variable}`}>
+      <body className="h-full font-sans">{children}</body>
     </html>
   );
 }

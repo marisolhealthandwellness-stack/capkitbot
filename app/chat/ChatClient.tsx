@@ -77,26 +77,30 @@ export function ChatClient({ initialMessages }: { initialMessages: Message[] }) 
 
   return (
     <div className="flex h-full flex-col">
-      <header className="flex items-center justify-between border-b border-neutral-200 px-4 py-3">
-        <span className="font-semibold">CapKitBOT</span>
+      <header className="flex items-center justify-between border-b border-plum/10 bg-bone px-4 py-3">
+        <span className="flex items-baseline gap-0.5 font-semibold text-plum">
+          CapKitBOT<span className="text-lg leading-none text-spark">&middot;</span>
+        </span>
         <div className="flex gap-4 text-sm">
-          <Link href="/profile" className="text-bubbleUser underline">
+          <Link href="/profile" className="text-claret underline">
             Profile
           </Link>
-          <button onClick={signOut} className="text-neutral-500">
+          <button onClick={signOut} className="text-slate">
             Sign out
           </button>
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto px-3 py-4">
+      <div className="flex-1 overflow-y-auto bg-bone px-3 py-4">
         <div className="flex flex-col gap-3">
           {messages.map((m) => (
             <ChatBubble key={m.id} role={m.role} content={m.content} />
           ))}
           {sending && (
             <div className="flex justify-start">
-              <div className="rounded-2xl bg-bubbleBot px-4 py-2 text-sm text-neutral-500">...</div>
+              <div className="rounded-tl-md rounded-tr-2xl rounded-bl-2xl rounded-br-2xl bg-claret px-4 py-2 text-sm text-bone/70">
+                &hellip;
+              </div>
             </div>
           )}
           <div ref={bottomRef} />

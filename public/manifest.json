@@ -4,8 +4,8 @@
   "description": "Your household's capsule kitchen assistant.",
   "start_url": "/chat",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0b84fe",
+  "background_color": "#FBF7F0",
+  "theme_color": "#8B2942",
   "icons": [
     {
       "src": "/icons/icon-192.png",

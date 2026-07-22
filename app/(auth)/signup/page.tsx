@@ -56,12 +56,12 @@ export default function SignupPage() {
 
   if (pendingConfirmation) {
     return (
-      <main className="mx-auto flex min-h-full max-w-sm flex-col justify-center px-6 py-12">
-        <h1 className="text-xl font-semibold">Check your email</h1>
-        <p className="mt-2 text-sm text-neutral-600">
+      <main className="mx-auto flex min-h-full max-w-sm flex-col justify-center bg-bone px-6 py-12 text-plum">
+        <h1 className="font-display text-2xl italic text-plum">Check your email.</h1>
+        <p className="mt-2 text-sm text-plum/60">
           We sent a confirmation link to {email}. Follow it, then come back and log in.
         </p>
-        <Link href="/login" className="mt-6 text-sm text-bubbleUser underline">
+        <Link href="/login" className="mt-6 text-sm text-claret underline">
           Back to login
         </Link>
       </main>
@@ -69,9 +69,9 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-full max-w-sm flex-col justify-center px-6 py-12">
-      <h1 className="text-xl font-semibold">Set up your household</h1>
-      <p className="mt-1 text-sm text-neutral-600">
+    <main className="mx-auto flex min-h-full max-w-sm flex-col justify-center bg-bone px-6 py-12 text-plum">
+      <h1 className="font-display text-3xl italic text-plum">Set up your household.</h1>
+      <p className="mt-1 text-sm text-plum/60">
         One login per household. You&apos;ll set up who you&apos;re cooking for once you&apos;re in.
       </p>
 
@@ -83,7 +83,7 @@ export default function SignupPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 bg-white px-3 py-2 text-plum focus:outline-none focus:border-claret"
           />
         </label>
 
@@ -95,21 +95,21 @@ export default function SignupPage() {
             minLength={8}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-lg border border-neutral-300 px-3 py-2"
+            className="rounded-lg border border-plum/15 bg-white px-3 py-2 text-plum focus:outline-none focus:border-claret"
           />
         </label>
 
-        <div className="rounded-lg bg-neutral-50 p-3 text-xs leading-relaxed text-neutral-600">
+        <div className="rounded-lg bg-white p-3 text-xs leading-relaxed text-plum/70">
           {CONSENT_SUMMARY}
         </div>
 
-        <label className="flex items-start gap-2 text-xs text-neutral-700">
+        <label className="flex items-start gap-2 text-xs text-plum/70">
           <input
             type="checkbox"
             required
             checked={consented}
             onChange={(e) => setConsented(e.target.checked)}
-            className="mt-0.5"
+            className="mt-0.5 accent-claret"
           />
           {CONSENT_CHECKBOX_LABEL}
         </label>
@@ -119,12 +119,12 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={!consented || submitting}
-          className="mt-2 rounded-full bg-bubbleUser px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
+          className="mt-2 rounded-full bg-spark px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
         >
           {submitting ? "Setting up..." : "Create household"}
         </button>
 
-        <p className="text-center text-xs text-neutral-400">
+        <p className="text-center text-xs text-plum/40">
           <Link href="/legal/terms" className="underline">
             Terms
           </Link>{" "}
@@ -135,9 +135,9 @@ export default function SignupPage() {
         </p>
       </form>
 
-      <p className="mt-6 text-center text-sm text-neutral-600">
+      <p className="mt-6 text-center text-sm text-plum/60">
         Already set up?{" "}
-        <Link href="/login" className="text-bubbleUser underline">
+        <Link href="/login" className="text-claret underline">
           Log in
         </Link>
       </p>
