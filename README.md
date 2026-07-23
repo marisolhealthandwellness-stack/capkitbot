@@ -81,7 +81,7 @@ A custom domain can be added later under **Domain management** once you're ready
 - **Next.js** (App Router) + **Tailwind** for the app and chat UI.
 - **Supabase** for auth (one login per household) and Postgres storage, locked down with row-level security so data never crosses between households.
 - **Anthropic's Claude API** (`claude-sonnet-5`, set in `lib/anthropicClient.ts`) generates every reply, called server-side only — the API key never reaches the browser.
-- `prompts/base.md` is CapKitBOT's full behavior spec (goals, portioning rules, tone, medical boundaries) — edit this file to change how the bot behaves once a household is set up. `prompts/onboarding.md` governs the guided setup interview before that.
+- `prompts/base.ts` is CapKitBOT's full behavior spec (goals, portioning rules, tone, medical boundaries) — edit the text in this file to change how the bot behaves once a household is set up. `prompts/onboarding.ts` governs the guided setup interview before that. (They're `.ts` string constants rather than loose `.md` files so the text is always bundled into the serverless function on Netlify.)
 - `lib/targets.ts` computes protein targets from each person's stats — this is the only source of truth for the numbers; the model is instructed to use them, never recompute.
 - Onboarding runs as a normal chat conversation, but the structured fields (weight, goal, capsule contents, etc.) are captured via tool calls the server validates and writes to the database (`lib/extract.ts`) — the model conducts the interview, the app owns the data.
 

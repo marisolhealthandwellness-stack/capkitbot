@@ -39,6 +39,20 @@ function parseChips(text: string): { text: string; chips: string[] | null } {
 }
 
 export async function POST(request: Request) {
+  try {
+    return await handleChat(request);
+  } catch (err) {
+    // Surface the failure as JSON so the client shows an error instead of
+    // dying silently. The detail is logged to the Netlify function log.
+    console.error("[/api/chat] failed:", err);
+    return NextResponse.json(
+      { error: "CapKitBOT hit a problem generating a reply." },
+      { status: 500 }
+    );
+  }
+}
+
+async function handleChat(request: Request) {
   const body = await request.json();
   const message: unknown = body?.message;
 

@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import { BASE_PROMPT } from "@/prompts/base";
+import { ONBOARDING_PROMPT } from "@/prompts/onboarding";
 import type { AgeBand, Goal } from "./targets";
 
 export type CookSkill = "no_cook" | "newbie" | "average" | "chef";
@@ -130,25 +130,12 @@ function formatKitchenContext(capsule: HouseholdCapsule): string {
   ].join(" ");
 }
 
-let cachedBaseTemplate: string | null = null;
-let cachedOnboardingTemplate: string | null = null;
-
-function loadBaseTemplate(): string {
-  if (cachedBaseTemplate) return cachedBaseTemplate;
-  const templatePath = path.join(process.cwd(), "prompts", "base.md");
-  cachedBaseTemplate = fs.readFileSync(templatePath, "utf-8");
-  return cachedBaseTemplate;
-}
-
 export function buildOnboardingSystemPrompt(): string {
-  if (cachedOnboardingTemplate) return cachedOnboardingTemplate;
-  const templatePath = path.join(process.cwd(), "prompts", "onboarding.md");
-  cachedOnboardingTemplate = fs.readFileSync(templatePath, "utf-8");
-  return cachedOnboardingTemplate;
+  return ONBOARDING_PROMPT;
 }
 
 export function buildSystemPrompt(people: Person[], capsule: HouseholdCapsule): string {
-  const template = loadBaseTemplate();
+  const template = BASE_PROMPT;
 
   const householdPeople = people.map(formatPerson).join("\n");
   const capsuleText = formatCapsule(capsule);
