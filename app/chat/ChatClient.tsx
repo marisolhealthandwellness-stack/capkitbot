@@ -36,12 +36,15 @@ export function ChatClient({ initialMessages }: { initialMessages: Message[] }) 
       const data = await res.json();
 
       if (!res.ok) {
+        const detail = data?.detail
+          ? `\n\n(Detail: ${data.detail}${data.status ? `, status ${data.status}` : ""})`
+          : "";
         setMessages((prev) => [
           ...prev,
           {
             id: crypto.randomUUID(),
             role: "assistant",
-            content: "Something went wrong on my end. Try that again?",
+            content: `Something went wrong on my end. Try that again?${detail}`,
             chips: null,
           },
         ]);

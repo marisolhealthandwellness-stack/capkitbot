@@ -43,10 +43,16 @@ export async function POST(request: Request) {
     return await handleChat(request);
   } catch (err) {
     // Surface the failure as JSON so the client shows an error instead of
-    // dying silently. The detail is logged to the Netlify function log.
+    // dying silently. The detail is logged to the Netlify function log and,
+    // during setup, echoed to the client to make diagnosis easy.
     console.error("[/api/chat] failed:", err);
+    const detail = err instanceof Error ? err.message : String(err);
+    const status =
+      typeof (err as { status?: number })?.status === "number"
+        ? (err as { status: number }).status
+        : undefined;
     return NextResponse.json(
-      { error: "CapKitBOT hit a problem generating a reply." },
+      { error: "CapKitBOT hit a problem generating a reply.", detail, status },
       { status: 500 }
     );
   }
