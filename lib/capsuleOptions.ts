@@ -30,6 +30,8 @@ export const CAPSULE_CATEGORIES: CapsuleCategory[] = [
     accent: "claret",
     presets: [
       "Chicken breast",
+      "Chicken thighs",
+      "Chicken legs",
       "Ground beef",
       "Eggs",
       "Tofu",
@@ -110,7 +112,6 @@ export const CAPSULE_CATEGORIES: CapsuleCategory[] = [
       "Garlic",
       "Salt and pepper",
       "Soy sauce",
-      "Olive oil",
       "Cumin",
       "Paprika",
       "Hot sauce",
@@ -120,7 +121,6 @@ export const CAPSULE_CATEGORIES: CapsuleCategory[] = [
       "Curry powder",
       "Salsa",
       "BBQ sauce",
-      "Sesame oil",
       "Taco seasoning",
       "Adobo",
       "Everything bagel seasoning",
@@ -133,6 +133,7 @@ export const CAPSULE_CATEGORIES: CapsuleCategory[] = [
     accent: "plum",
     presets: [
       "Olive oil",
+      "Sesame oil",
       "Butter",
       "Avocado",
       "Peanut butter",

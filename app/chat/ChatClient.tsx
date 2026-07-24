@@ -14,13 +14,15 @@ interface Message {
   chips: string[] | null;
 }
 
-// The core things people open the app to do. Shown above the input whenever the
-// bot isn't already offering its own chips, so they're always one tap away.
+// The five main actions people open the app to do. Shown above the input whenever
+// the bot isn't already offering its own chips, so they're always one tap away.
+// The bot brain (prompts/base.ts) defines what each one does.
 const QUICK_ACTIONS = [
-  "What should I eat?",
-  "Cook what I have",
-  "I'm hungry",
-  "Meal prep",
+  "Build a full meal",
+  "Just a snack",
+  "Use what I have",
+  "Meal Planning",
+  "Remix my recipe",
 ];
 
 export function ChatClient({ initialMessages }: { initialMessages: Message[] }) {
@@ -101,8 +103,8 @@ export function ChatClient({ initialMessages }: { initialMessages: Message[] }) 
             <div className="mt-6 px-2 text-center">
               <p className="font-display text-xl italic text-plum">You&apos;re all set.</p>
               <p className="mx-auto mt-2 max-w-xs text-sm text-plum/60">
-                Ask me what to eat, tell me you&apos;re hungry, or tap one of the
-                shortcuts below to get going.
+                Tap one of the shortcuts below to get going, or just type what
+                you&apos;re after.
               </p>
             </div>
           )}

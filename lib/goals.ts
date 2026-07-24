@@ -20,7 +20,7 @@ export const GOAL_META: GoalMeta[] = [
   {
     value: "faster",
     label: "Faster",
-    blurb: "Fuel training and endurance. Protein high, carbs lean on starches.",
+    blurb: "Fuel training and endurance. Protein high, carbs mostly rice, potatoes, and other starches.",
     adultOnly: false,
   },
   {
