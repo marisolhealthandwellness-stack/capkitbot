@@ -18,6 +18,11 @@ export default async function ChatPage() {
     redirect("/login");
   }
 
+  // Setup is a form now, not a chat conversation — send unfinished households there.
+  if (household.onboarding_state !== "complete") {
+    redirect("/setup");
+  }
+
   const history = await getRecentMessages(supabase, household.id, 20);
   const initialMessages = history
     .filter((m) => m.role === "user" || m.role === "assistant")

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { ChatBubble } from "@/components/ChatBubble";
 import { ChoiceChips } from "@/components/ChoiceChips";
@@ -14,11 +14,19 @@ interface Message {
   chips: string[] | null;
 }
 
+// The core things people open the app to do. Shown above the input whenever the
+// bot isn't already offering its own chips, so they're always one tap away.
+const QUICK_ACTIONS = [
+  "What should I eat?",
+  "Cook what I have",
+  "I'm hungry",
+  "Meal prep",
+];
+
 export function ChatClient({ initialMessages }: { initialMessages: Message[] }) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const kickedOff = useRef(false);
 
   async function send(text: string) {
     setSending(true);
@@ -61,15 +69,6 @@ export function ChatClient({ initialMessages }: { initialMessages: Message[] }) 
     }
   }
 
-  // Brand-new household with no history yet: let the bot open the conversation.
-  useEffect(() => {
-    if (!kickedOff.current && messages.length === 0) {
-      kickedOff.current = true;
-      send("Hi");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   async function signOut() {
     const supabase = createBrowserSupabaseClient();
     await supabase.auth.signOut();
@@ -77,6 +76,8 @@ export function ChatClient({ initialMessages }: { initialMessages: Message[] }) 
   }
 
   const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant");
+  const botChips =
+    lastAssistant?.chips && lastAssistant.chips.length > 0 ? lastAssistant.chips : null;
 
   return (
     <div className="flex h-full flex-col">
@@ -96,6 +97,15 @@ export function ChatClient({ initialMessages }: { initialMessages: Message[] }) 
 
       <div className="flex-1 overflow-y-auto bg-bone px-3 py-4">
         <div className="flex flex-col gap-3">
+          {messages.length === 0 && !sending && (
+            <div className="mt-6 px-2 text-center">
+              <p className="font-display text-xl italic text-plum">You&apos;re all set.</p>
+              <p className="mx-auto mt-2 max-w-xs text-sm text-plum/60">
+                Ask me what to eat, tell me you&apos;re hungry, or tap one of the
+                shortcuts below to get going.
+              </p>
+            </div>
+          )}
           {messages.map((m) => (
             <ChatBubble key={m.id} role={m.role} content={m.content} />
           ))}
@@ -110,9 +120,12 @@ export function ChatClient({ initialMessages }: { initialMessages: Message[] }) 
         </div>
       </div>
 
-      {lastAssistant?.chips && lastAssistant.chips.length > 0 && !sending && (
-        <ChoiceChips options={lastAssistant.chips} onSelect={send} />
-      )}
+      {!sending &&
+        (botChips ? (
+          <ChoiceChips options={botChips} onSelect={send} />
+        ) : (
+          <ChoiceChips options={QUICK_ACTIONS} onSelect={send} />
+        ))}
 
       <ChatInput onSend={send} disabled={sending} />
     </div>
