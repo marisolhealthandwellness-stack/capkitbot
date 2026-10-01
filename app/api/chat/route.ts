@@ -16,6 +16,15 @@ export const runtime = "nodejs";
 
 const MAX_TOOL_ITERATIONS = 5;
 
+// Anthropic server-side web search. Cast because this SDK version's types predate
+// the tool. Attached only on the "Full recipe" turn (see below) to keep cost down —
+// a search is roughly a cent, and we never want one on an ordinary meal reply.
+const WEB_SEARCH_TOOL = {
+  type: "web_search_20260209",
+  name: "web_search",
+  max_uses: 3,
+} as unknown as Anthropic.Tool;
+
 function parseChips(text: string): { text: string; chips: string[] | null } {
   const lines = text.split("\n");
   const chipLineIndex = lines.findIndex((line) => line.trim().startsWith("CHIPS:"));
@@ -108,12 +117,15 @@ async function handleChat(request: Request) {
       tools = ONBOARDING_TOOLS;
     } else {
       systemPrompt = buildSystemPrompt(people, capsule);
-      tools = undefined;
+      // Give the model web search ONLY when the member is asking for a full recipe
+      // (the "Full recipe" follow-up chip sends exactly that text). This keeps web
+      // search — and its per-search cost — off every normal meal reply.
+      tools = /full recipe/i.test(message) ? [WEB_SEARCH_TOOL] : undefined;
     }
   }
 
   const client = createAnthropicClient();
-  let finalText = "";
+  const textParts: string[] = [];
 
   for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
     const response = await client.messages.create({
@@ -124,43 +136,61 @@ async function handleChat(request: Request) {
       ...(tools ? { tools } : {}),
     });
 
-    const textBlocks = response.content.filter(
-      (block): block is Anthropic.TextBlock => block.type === "text"
-    );
-    finalText = textBlocks.map((b) => b.text).join("\n");
+    const turnText = response.content
+      .filter((block): block is Anthropic.TextBlock => block.type === "text")
+      .map((b) => b.text)
+      .join("\n");
+    if (turnText.trim()) textParts.push(turnText);
 
-    if (response.stop_reason !== "tool_use") {
-      break;
-    }
+    // "pause_turn" isn't in this SDK version's stop_reason union; compare as string.
+    const stop = response.stop_reason as string | null;
 
-    const toolUseBlocks = response.content.filter(
-      (block): block is Anthropic.ToolUseBlock => block.type === "tool_use"
-    );
-
-    anthropicMessages = [
-      ...anthropicMessages,
-      { role: "assistant", content: response.content },
-    ];
-
-    const toolResults: Anthropic.ToolResultBlockParam[] = [];
-    for (const toolUse of toolUseBlocks) {
-      const result = await executeOnboardingTool(
-        supabase,
-        household.id,
-        toolUse.name,
-        toolUse.input as Record<string, unknown>
+    if (stop === "tool_use") {
+      // Client-side tools (onboarding extraction). Run them and loop.
+      const toolUseBlocks = response.content.filter(
+        (block): block is Anthropic.ToolUseBlock => block.type === "tool_use"
       );
-      toolResults.push({
-        type: "tool_result",
-        tool_use_id: toolUse.id,
-        content: result.content,
-        is_error: result.isError,
-      });
+
+      anthropicMessages = [
+        ...anthropicMessages,
+        { role: "assistant", content: response.content },
+      ];
+
+      const toolResults: Anthropic.ToolResultBlockParam[] = [];
+      for (const toolUse of toolUseBlocks) {
+        const result = await executeOnboardingTool(
+          supabase,
+          household.id,
+          toolUse.name,
+          toolUse.input as Record<string, unknown>
+        );
+        toolResults.push({
+          type: "tool_result",
+          tool_use_id: toolUse.id,
+          content: result.content,
+          is_error: result.isError,
+        });
+      }
+
+      anthropicMessages = [...anthropicMessages, { role: "user", content: toolResults }];
+      continue;
     }
 
-    anthropicMessages = [...anthropicMessages, { role: "user", content: toolResults }];
+    if (stop === "pause_turn") {
+      // A server tool (web search) is mid-flight. Resubmit with the partial
+      // assistant turn appended; the server resolves the tool itself, so there is
+      // no tool_result for us to provide.
+      anthropicMessages = [
+        ...anthropicMessages,
+        { role: "assistant", content: response.content },
+      ];
+      continue;
+    }
+
+    break;
   }
 
+  const finalText = textParts.join("\n");
   const { text: cleanedText, chips } = parseChips(finalText || "Let's keep going.");
 
   await saveMessage(supabase, household.id, "assistant", cleanedText, chips);

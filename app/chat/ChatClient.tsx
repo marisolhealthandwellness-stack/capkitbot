@@ -25,13 +25,31 @@ const QUICK_ACTIONS = [
   "Remix my recipe",
 ];
 
+// Always appended to any chips the bot offers, so a member can bail out of a
+// flow and get the main 5 back. It's a pure client-side reset — it sends nothing
+// to the bot, so it's instant and free.
+const RESET_CHIP = "Start over";
+
 export function ChatClient({ initialMessages }: { initialMessages: Message[] }) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [sending, setSending] = useState(false);
+  // When true, show the main 5 chips even though the last bot reply offered its
+  // own — set by tapping "Start over", cleared the moment a new message is sent.
+  const [resetToMain, setResetToMain] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Chip taps route through here so "Start over" resets instead of messaging the bot.
+  function handleChip(value: string) {
+    if (value === RESET_CHIP) {
+      setResetToMain(true);
+      return;
+    }
+    send(value);
+  }
 
   async function send(text: string) {
     setSending(true);
+    setResetToMain(false);
     setMessages((prev) => [
       ...prev,
       { id: crypto.randomUUID(), role: "user", content: text, chips: null },
@@ -79,7 +97,9 @@ export function ChatClient({ initialMessages }: { initialMessages: Message[] }) 
 
   const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant");
   const botChips =
-    lastAssistant?.chips && lastAssistant.chips.length > 0 ? lastAssistant.chips : null;
+    !resetToMain && lastAssistant?.chips && lastAssistant.chips.length > 0
+      ? lastAssistant.chips
+      : null;
 
   return (
     <div className="flex h-full flex-col">
@@ -124,7 +144,7 @@ export function ChatClient({ initialMessages }: { initialMessages: Message[] }) 
 
       {!sending &&
         (botChips ? (
-          <ChoiceChips options={botChips} onSelect={send} />
+          <ChoiceChips options={[...botChips, RESET_CHIP]} onSelect={handleChip} />
         ) : (
           <ChoiceChips options={QUICK_ACTIONS} onSelect={send} />
         ))}

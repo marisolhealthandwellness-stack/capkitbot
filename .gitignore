@@ -6,3 +6,6 @@ out
 .netlify
 *.log
 .DS_Store
+
+# TypeScript incremental build info
+tsconfig.tsbuildinfo
