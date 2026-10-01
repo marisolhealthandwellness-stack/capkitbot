@@ -30,7 +30,13 @@ const QUICK_ACTIONS = [
 // to the bot, so it's instant and free.
 const RESET_CHIP = "Start over";
 
-export function ChatClient({ initialMessages }: { initialMessages: Message[] }) {
+export function ChatClient({
+  initialMessages,
+  billingEnabled = false,
+}: {
+  initialMessages: Message[];
+  billingEnabled?: boolean;
+}) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [sending, setSending] = useState(false);
   // When true, show the main 5 chips even though the last bot reply offered its
@@ -61,6 +67,12 @@ export function ChatClient({ initialMessages }: { initialMessages: Message[] }) 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
       });
+      // Trial/subscription lapsed mid-session — send them to the subscribe screen.
+      if (res.status === 402) {
+        window.location.href = "/subscribe";
+        return;
+      }
+
       const data = await res.json();
 
       if (!res.ok) {
@@ -111,6 +123,11 @@ export function ChatClient({ initialMessages }: { initialMessages: Message[] }) 
           <Link href="/profile" className="text-claret underline">
             Profile
           </Link>
+          {billingEnabled && (
+            <Link href="/subscribe" className="text-claret underline">
+              Subscription
+            </Link>
+          )}
           <button onClick={signOut} className="text-slate">
             Sign out
           </button>

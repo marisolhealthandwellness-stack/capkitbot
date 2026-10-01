@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getCapsule, getHouseholdForUser, getPeople } from "@/lib/household";
+import { BILLING_ENABLED, getBilling, hasAccess } from "@/lib/billing";
 import { SetupClient } from "./SetupClient";
 import type { TargetsValue } from "./TargetsStep";
 
@@ -17,6 +18,11 @@ export default async function SetupPage() {
   const household = await getHouseholdForUser(supabase, user.id);
   if (!household) {
     redirect("/login");
+  }
+
+  // No active trial/subscription — can't set up until they subscribe.
+  if (BILLING_ENABLED && !hasAccess(await getBilling(supabase, household.id))) {
+    redirect("/subscribe");
   }
 
   // Already fully set up — nothing to do here.

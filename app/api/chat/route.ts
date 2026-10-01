@@ -11,6 +11,7 @@ import {
   saveMessage,
 } from "@/lib/household";
 import { executeOnboardingTool, ONBOARDING_TOOLS } from "@/lib/extract";
+import { BILLING_ENABLED, getBilling, hasAccess } from "@/lib/billing";
 
 export const runtime = "nodejs";
 
@@ -87,6 +88,11 @@ async function handleChat(request: Request) {
   const household = await getHouseholdForUser(supabase, user.id);
   if (!household) {
     return NextResponse.json({ error: "No household found" }, { status: 404 });
+  }
+
+  // Backstop the page-level gate: no active trial/subscription, no bot.
+  if (BILLING_ENABLED && !hasAccess(await getBilling(supabase, household.id))) {
+    return NextResponse.json({ error: "subscription_required" }, { status: 402 });
   }
 
   await saveMessage(supabase, household.id, "user", message);
