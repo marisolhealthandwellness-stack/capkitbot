@@ -9,7 +9,9 @@ export function getStripe(): Stripe {
   if (!cached) {
     const key = process.env.STRIPE_SECRET_KEY;
     if (!key) throw new Error("STRIPE_SECRET_KEY is not set");
-    cached = new Stripe(key);
+    // Pin an API version that supports Managed Payments (needs 2025-03-31.basil or
+    // greater). Cast because this SDK version's types predate the string.
+    cached = new Stripe(key, { apiVersion: "2025-03-31.basil" as Stripe.StripeConfig["apiVersion"] });
   }
   return cached;
 }
