@@ -53,6 +53,15 @@ async function getOrCreateTagId(name: string): Promise<number> {
 export async function tagSubscriber(email: string, tagName: string): Promise<void> {
   if (!process.env.KIT_API_KEY) return; // Kit integration not configured yet.
   try {
+    // Create-or-find the subscriber first. Kit's "tag by email" can fail when the
+    // address isn't already on the list, so this upsert makes tagging work for any
+    // buyer (not only those who already came through the quiz). Create is an upsert
+    // — it returns the existing subscriber if the email is already known.
+    await kitFetch("/subscribers", {
+      method: "POST",
+      body: JSON.stringify({ email_address: email }),
+    });
+
     const tagId = await getOrCreateTagId(tagName);
     await kitFetch(`/tags/${tagId}/subscribers`, {
       method: "POST",
