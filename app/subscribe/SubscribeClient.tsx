@@ -22,7 +22,8 @@ export function SubscribeClient({
       const res = await fetch(path, { method: "POST" });
       const data = await res.json();
       if (!res.ok || !data.url) {
-        setError(data.error || "Something went wrong. Try again?");
+        const detail = data?.detail ? ` (${data.detail})` : "";
+        setError((data.error || "Something went wrong. Try again?") + detail);
         setBusy(false);
         return;
       }
