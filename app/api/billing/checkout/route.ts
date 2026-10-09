@@ -42,7 +42,9 @@ export async function POST(request: Request) {
       // back to the household.
       subscription_data: { metadata: { household_id: household.id } },
       metadata: { household_id: household.id },
-      success_url: `${origin}/chat`,
+      // Return through a confirm route that activates access synchronously, so
+      // the member lands in chat without waiting for the async webhook.
+      success_url: `${origin}/api/billing/confirm?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/subscribe`,
       allow_promotion_codes: true,
     });
