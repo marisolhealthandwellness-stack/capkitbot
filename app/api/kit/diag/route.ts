@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     subId = JSON.parse((createSub as { body: string }).body).subscriber?.id ?? null;
   } catch {}
 
-  const tagsRes = await call("GET", "/tags");
+  const tagsRes = await call("GET", "/tags?per_page=100");
   let tagId: number | null = null;
   try {
     tagId =
