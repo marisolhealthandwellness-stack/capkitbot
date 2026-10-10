@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-// TEMPORARY diagnostic: runs the real Kit tagging flow and reports each step's
-// HTTP status so we can see which "tag a subscriber" endpoint Kit v4 accepts.
-// Pass ?email=... (defaults to a throwaway). Exposes no secret. Remove after use.
+// TEMPORARY diagnostic: runs the real Kit tagging flow and reports each step so we
+// can see which tag-apply endpoint Kit v4 accepts. Parses full responses (only
+// truncates for display). Exposes no secret. Remove after use.
 export async function GET(request: Request) {
   const key = process.env.KIT_API_KEY;
   if (!key) return NextResponse.json({ keyPresent: false });
@@ -13,46 +13,43 @@ export async function GET(request: Request) {
   const headers = { "Content-Type": "application/json", "X-Kit-Api-Key": key };
 
   async function call(method: string, path: string, body?: unknown) {
-    try {
-      const res = await fetch(`https://api.kit.com/v4${path}`, {
-        method,
-        headers,
-        body: body ? JSON.stringify(body) : undefined,
-      });
-      const text = await res.text();
-      return { status: res.status, body: text.slice(0, 220) };
-    } catch (e) {
-      return { error: String(e) };
-    }
+    const res = await fetch(`https://api.kit.com/v4${path}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    return { status: res.status, text: await res.text() };
   }
 
   const steps: Record<string, unknown> = { email };
 
   const createSub = await call("POST", "/subscribers", { email_address: email });
-  steps.createSubscriber = createSub;
+  steps.createSubscriber = { status: createSub.status };
   let subId: number | null = null;
   try {
-    subId = JSON.parse((createSub as { body: string }).body).subscriber?.id ?? null;
+    subId = JSON.parse(createSub.text).subscriber?.id ?? null;
   } catch {}
-
-  const tagsRes = await call("GET", "/tags?per_page=100");
-  let tagId: number | null = null;
-  try {
-    tagId =
-      (JSON.parse((tagsRes as { body: string }).body).tags || []).find(
-        (t: { id: number; name: string }) => t.name === "capkitbot-subscriber"
-      )?.id ?? null;
-  } catch {}
-  steps.tagId = tagId;
   steps.subId = subId;
 
-  if (tagId) {
-    steps.tagByEmail = await call("POST", `/tags/${tagId}/subscribers`, {
+  const tagsRes = await call("GET", "/tags?per_page=100");
+  let tags: { id: number; name: string }[] = [];
+  try {
+    tags = JSON.parse(tagsRes.text).tags || [];
+  } catch {}
+  const tag = tags.find((t) => t.name === "capkitbot-subscriber");
+  steps.tagsStatus = tagsRes.status;
+  steps.tagCount = tags.length;
+  steps.tagId = tag?.id ?? null;
+
+  if (tag?.id) {
+    const byEmail = await call("POST", `/tags/${tag.id}/subscribers`, {
       email_address: email,
     });
-  }
-  if (tagId && subId) {
-    steps.tagById = await call("POST", `/tags/${tagId}/subscribers/${subId}`);
+    steps.tagByEmail = { status: byEmail.status, body: byEmail.text.slice(0, 160) };
+    if (subId) {
+      const byId = await call("POST", `/tags/${tag.id}/subscribers/${subId}`);
+      steps.tagById = { status: byId.status, body: byId.text.slice(0, 160) };
+    }
   }
 
   return NextResponse.json(steps);
