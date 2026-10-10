@@ -88,7 +88,7 @@ async function handleEvent(event: Stripe.Event) {
         current_period_end: periodEnd,
       });
 
-      const email = session.customer_details?.email;
+      const email = session.customer_details?.email || (await emailForHousehold(householdId));
       if (email) await tagSubscriber(email, KIT_TAG_SUBSCRIBER);
       break;
     }
@@ -113,7 +113,7 @@ async function handleEvent(event: Stripe.Event) {
       if (!householdId) return;
       await setBilling(householdId, { status: "canceled" });
 
-      const email = await emailForCustomer(stripe, sub.customer);
+      const email = await emailForHousehold(householdId);
       if (email) await tagSubscriber(email, KIT_TAG_CANCELED);
       break;
     }
@@ -123,16 +123,20 @@ async function handleEvent(event: Stripe.Event) {
   }
 }
 
-async function emailForCustomer(
-  stripe: Stripe,
-  customer: string | Stripe.Customer | Stripe.DeletedCustomer | null
-): Promise<string | null> {
+// The household's login email, read from our own database. Reliable even when
+// Stripe (Managed Payments) doesn't expose the customer's email on the webhook.
+async function emailForHousehold(householdId: string): Promise<string | null> {
   try {
-    const id = typeof customer === "string" ? customer : customer?.id;
-    if (!id) return null;
-    const c = await stripe.customers.retrieve(id);
-    if ((c as Stripe.DeletedCustomer).deleted) return null;
-    return (c as Stripe.Customer).email ?? null;
+    const admin = createAdminSupabaseClient();
+    const { data: household } = await admin
+      .from("households")
+      .select("owner_user_id")
+      .eq("id", householdId)
+      .maybeSingle();
+    if (!household?.owner_user_id) return null;
+    const { data, error } = await admin.auth.admin.getUserById(household.owner_user_id);
+    if (error) return null;
+    return data.user?.email ?? null;
   } catch {
     return null;
   }
