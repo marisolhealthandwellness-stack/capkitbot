@@ -32,7 +32,10 @@ async function getOrCreateTagId(name: string): Promise<number> {
   const cached = tagIdCache.get(name);
   if (cached !== undefined) return cached;
 
-  const list = await kitFetch("/tags");
+  // Fetch all tags (not just the default first page) so an existing tag is found
+  // regardless of how many tags the account has — otherwise we'd miss it and fall
+  // through to create.
+  const list = await kitFetch("/tags?per_page=100");
   const existing = (list.tags || []).find(
     (t: { id: number; name: string }) => t.name === name
   );
